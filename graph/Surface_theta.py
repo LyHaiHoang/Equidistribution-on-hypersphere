@@ -47,20 +47,22 @@ def plot_surface(dimensions, n_vectors, thetas):
     surf = ax.plot_surface(X, Y, Z, cmap='viridis', edgecolor='k', linewidth=0.5)
 
     ax.set_xlabel('Dimension')
-    ax.set_ylabel('Nb vectors')
+    ax.set_ylabel('Number of Vectors')
     ax.set_zlabel('Theta (°)')
-    ax.set_title('Surface Plot: Theta theo Dimension và Nb vectors')
+    ax.set_title('Surface Plot: Minimum angles depending on Dimension and Number of Vectors')
 
     fig.colorbar(surf, shrink=0.5, aspect=10, label='Theta')
     plt.tight_layout()
     plt.show()
 
 # Đường dẫn file
-filename = 'C:\\Users\\ADMIN\\Downloads\\Projet\\hypersurface\\graph\\E_tot.txt'
-filename_code = 'C:\\Users\\ADMIN\\Downloads\\Projet\\hypersurface\\graph\\theta_moyen.txt'
+filename = 'C:\\Users\\ADMIN\\Downloads\\Projet\\equidistribution-on-hypersphere\\graph\\E_tot.txt'
+filename_code = 'C:\\Users\\ADMIN\\Downloads\\Projet\\equidistribution-on-hypersphere\\graph\\theta_moyen.txt'
 
 # Đọc và vẽ
 dims, nvs, thetas = read_data(filename)
 D,N,theta_code = read_data(filename_code)
+ecart = theta_code - thetas
 plot_surface(dims, nvs, thetas)
 plot_surface(D, N, theta_code)
+plot_surface(D, N, ecart, zlabel='Écart (°)', title='Difference (Écart = theta_code - theta)')

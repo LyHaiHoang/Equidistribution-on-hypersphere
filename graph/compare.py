@@ -36,8 +36,8 @@ def create_grid(dimensions, n_vectors, thetas):
     return X, Y, Z
 
 # Đường dẫn file
-filename_real = 'C:\\Users\\ADMIN\\Downloads\\Projet\\hypersurface\\graph\\E_tot.txt'
-filename_code = 'C:\\Users\\ADMIN\\Downloads\\Projet\\hypersurface\\graph\\theta_moyen.txt'
+filename_real = 'C:\\Users\\ADMIN\\Downloads\\Projet\\equidistribution-on-hypersphere\\graph\\E_tot.txt'
+filename_code = 'C:\\Users\\ADMIN\\Downloads\\Projet\\equidistribution-on-hypersphere\\graph\\theta_moyen.txt'
 
 # Đọc dữ liệu
 dims1, nvs1, thetas1 = read_data(filename_real)

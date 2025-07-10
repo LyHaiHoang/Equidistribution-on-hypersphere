@@ -22,8 +22,8 @@ def read_data(filename):
     return np.array(dimensions), np.array(n_vectors), np.array(thetas)
 
 # Đọc từ hai file
-file1 = 'C:\\Users\\ADMIN\\Downloads\\Projet\\hypersurface\\graph\\E_tot.txt'
-file2 = 'C:\\Users\\ADMIN\\Downloads\\Projet\\hypersurface\\graph\\theta_moyen.txt'
+file1 = 'C:\\Users\\ADMIN\\Downloads\\Projet\\equidistribution-on-hypersphere\\graph\\E_tot.txt'
+file2 = 'C:\\Users\\ADMIN\\Downloads\\Projet\\equidistribution-on-hypersphere\\graph\\theta_moyen.txt'
 
 dim1, nv1, theta1 = read_data(file1)
 dim2, nv2, theta2 = read_data(file2)
