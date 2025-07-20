@@ -1,68 +1,75 @@
 import numpy as np
-from scipy.spatial import ConvexHull
+import matplotlib.pyplot as plt
+from mpl_toolkits.mplot3d.art3d import Poly3DCollection
 
-# Tọa độ đỉnh của 5 khối Platonic (đơn vị)
-# 1. Tetrahedron
-tetrahedron = np.array([
+# Định nghĩa đỉnh của 5 Platonic solids (đơn giản, chưa chuẩn hóa)
+
+# 1. Tetrahedron (4 đỉnh)
+tetrahedron_vertices = np.array([
     [1, 1, 1],
-    [1, -1, -1],
+    [-1, -1, 1],
     [-1, 1, -1],
-    [-1, -1, 1]
+    [1, -1, -1]
 ])
-tetrahedron = tetrahedron / np.linalg.norm(tetrahedron[0])  # chuẩn hóa
 
-# 2. Cube (đơn vị cạnh 2, tâm tại gốc)
-cube = np.array([[x, y, z] for x in [-1,1] for y in [-1,1] for z in [-1,1]])
-cube = cube / np.linalg.norm(cube[0])  # chuẩn hóa
+tetrahedron_faces = [
+    [0,1,2],
+    [0,3,1],
+    [0,2,3],
+    [1,3,2]
+]
 
-# 3. Octahedron (tám đỉnh, trên các trục tọa độ)
-octahedron = np.array([
+# 2. Cube (8 đỉnh)
+cube_vertices = np.array([[x,y,z] for x in [-1,1] for y in [-1,1] for z in [-1,1]])
+cube_faces = [
+    [0,1,3,2], [4,5,7,6], [0,1,5,4],
+    [2,3,7,6], [0,2,6,4], [1,3,7,5]
+]
+
+# 3. Octahedron (6 đỉnh)
+octahedron_vertices = np.array([
     [1,0,0], [-1,0,0],
     [0,1,0], [0,-1,0],
     [0,0,1], [0,0,-1]
 ])
 
-# 4. Dodecahedron và 5. Icosahedron có thể dùng vertices từ scipy.spatial.ConvexHull
-# Scipy không có sẵn vertices Platonic, ta dùng thư viện khác hoặc tạo thủ công
-# Ở đây dùng module external "platonic_solids" để đơn giản (cài pip install platonic-solids)
-try:
-    from platonic_solids import PlatonicSolid
-except ImportError:
-    print("Please install platonic-solids: pip install platonic-solids")
-    exit()
+octahedron_faces = [
+    [0,2,4], [2,1,4], [1,3,4], [3,0,4],
+    [0,2,5], [2,1,5], [1,3,5], [3,0,5]
+]
 
-dodecahedron = np.array(PlatonicSolid('dodecahedron').vertices)
-icosahedron = np.array(PlatonicSolid('icosahedron').vertices)
+# Hàm vẽ đa giác 3D
+def plot_solid(ax, vertices, faces, color):
+    poly3d = [[vertices[face] for face in f] for f in faces]
+    collection = Poly3DCollection(poly3d, facecolors=color, linewidths=1, edgecolors='k', alpha=0.5)
+    ax.add_collection3d(collection)
+    ax.scatter(vertices[:,0], vertices[:,1], vertices[:,2], color='k')
 
-def angle_between_vectors(u, v):
-    """Calculate angle in degrees between two vectors u and v"""
-    u = u / np.linalg.norm(u)
-    v = v / np.linalg.norm(v)
-    dot = np.clip(np.dot(u, v), -1.0, 1.0)  # clip for numerical stability
-    return np.degrees(np.arccos(dot))
+fig = plt.figure(figsize=(15,4))
 
-def all_vertex_angles(vertices):
-    """Calculate all pairwise central angles between vertices"""
-    n = len(vertices)
-    angles = []
-    for i in range(n):
-        for j in range(i+1, n):
-            angle = angle_between_vectors(vertices[i], vertices[j])
-            angles.append(angle)
-    return angles
+# Vẽ Tetrahedron
+ax1 = fig.add_subplot(151, projection='3d')
+plot_solid(ax1, tetrahedron_vertices, tetrahedron_faces, 'cyan')
+ax1.set_title('Tetrahedron')
+ax1.auto_scale_xyz([-1.5,1.5],[-1.5,1.5],[-1.5,1.5])
 
-solids = {
-    'Tetrahedron': tetrahedron,
-    'Cube': cube,
-    'Octahedron': octahedron,
-    'Dodecahedron': dodecahedron,
-    'Icosahedron': icosahedron
-}
+# Vẽ Cube
+ax2 = fig.add_subplot(152, projection='3d')
+plot_solid(ax2, cube_vertices, cube_faces, 'orange')
+ax2.set_title('Cube')
+ax2.auto_scale_xyz([-1.5,1.5],[-1.5,1.5],[-1.5,1.5])
 
-for name, verts in solids.items():
-    angles = all_vertex_angles(verts)
-    print(f"{name}:")
-    print(f"  Number of vertices: {len(verts)}")
-    print(f"  Min angle (deg): {min(angles):.2f}")
-    print(f"  Max angle (deg): {max(angles):.2f}")
-    print(f"  Sample angles (first 5): {[round(a,2) for a in angles[:5]]}\n")
+# Vẽ Octahedron
+ax3 = fig.add_subplot(153, projection='3d')
+plot_solid(ax3, octahedron_vertices, octahedron_faces, 'green')
+ax3.set_title('Octahedron')
+ax3.auto_scale_xyz([-1.5,1.5],[-1.5,1.5],[-1.5,1.5])
+
+# Để vẽ Dodecahedron và Icosahedron phức tạp hơn, bạn có thể dùng thư viện external hoặc tọa độ chuẩn tốn diện tích
+# Nên mình tạm dừng ở 3 khối cơ bản này
+
+for ax in [ax1, ax2, ax3]:
+    ax.set_axis_off()
+
+plt.tight_layout()
+plt.show()
